@@ -1,157 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard Mahasiswa</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mahasiswa</title>
 
-    <body class="bg-gray-100 min-h-screen">
-        <div class="max-w-6xl mx-auto py-10 px-6">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 class="text-4xl font-bold text-gray-800">Dashboard Mahasiswa</h1>
-                    <p class="text-gray-500 mt-2">Statistik jumlah mahasiswa per prodi, angkatan, dan kelulusan.</p>
-                </div>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-                <a href="{{ route('student.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
-                    Kembali ke Daftar Mahasiswa
-                </a>
-            </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white rounded-3xl shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Jumlah Mahasiswa per Prodi</h2>
-                    <canvas id="prodiChart" height="220"></canvas>
-                </div>
+<body class="bg-gray-100 min-h-screen p-8">
 
-                <div class="bg-white rounded-3xl shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Jumlah Mahasiswa per Angkatan</h2>
-                    <canvas id="angkatanChart" height="220"></canvas>
-                </div>
+    <h1 class="text-4xl font-bold mb-8 text-gray-800">
+        Dashboard Mahasiswa
+    </h1>
 
-                <div class="bg-white rounded-3xl shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Jumlah Mahasiswa Lulus per Angkatan</h2>
-                    <canvas id="graduatedChart" height="220"></canvas>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div class="bg-white rounded-3xl shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Status Kelulusan Mahasiswa</h2>
-                    <canvas id="statusChart" height="220"></canvas>
-                </div>
-            </div>
+        <div class="bg-white p-5 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-4">
+                Mahasiswa per Prodi
+            </h2>
+
+            <canvas id="prodiChart"></canvas>
         </div>
 
-        <script>
-            const prodiLabels = @json($prodiCounts->keys());
-            const prodiValues = @json($prodiCounts->values());
-            const angkatanLabels = @json($angkatanCounts->keys());
-            const angkatanValues = @json($angkatanCounts->values());
-            const graduatedLabels = @json($graduatedCounts->keys());
-            const graduatedValues = @json($graduatedCounts->values());
-            const statusData = @json($statusData);
+        <div class="bg-white p-5 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-4">
+                Mahasiswa per Angkatan
+            </h2>
 
-            new Chart(document.getElementById('prodiChart'), {
-                type: 'bar',
-                data: {
-                    labels: prodiLabels,
-                    datasets: [{
-                        label: 'Jumlah Mahasiswa',
-                        data: prodiValues,
-                        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
-                        borderRadius: 12,
-                        borderWidth: 1,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
-                    }
-                }
-            });
+            <canvas id="angkatanChart"></canvas>
+        </div>
 
-            new Chart(document.getElementById('angkatanChart'), {
-                type: 'line',
-                data: {
-                    labels: angkatanLabels,
-                    datasets: [{
-                        label: 'Jumlah Mahasiswa',
-                        data: angkatanValues,
-                        borderColor: '#2563eb',
-                        backgroundColor: 'rgba(37, 99, 235, 0.15)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 5,
-                        pointBackgroundColor: '#2563eb',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
-                    }
-                }
-            });
+        <div class="bg-white p-5 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-4">
+                Mahasiswa Lulus
+            </h2>
 
-            new Chart(document.getElementById('graduatedChart'), {
-                type: 'bar',
-                data: {
-                    labels: graduatedLabels,
-                    datasets: [{
-                        label: 'Jumlah Mahasiswa Lulus',
-                        data: graduatedValues,
-                        backgroundColor: '#10b981',
-                        borderRadius: 12,
-                        borderWidth: 1,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
-                    }
-                }
-            });
+            <canvas id="lulusChart"></canvas>
+        </div>
 
-            new Chart(document.getElementById('statusChart'), {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(statusData),
-                    datasets: [{
-                        data: Object.values(statusData),
-                        backgroundColor: ['#2563eb', '#f97316'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        </script>
-    </body>
+        <div class="bg-white p-5 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-4">
+                Gender Mahasiswa
+            </h2>
+
+            <canvas id="genderChart"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+
+        new Chart(document.getElementById('prodiChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Informatika', 'Sistem Informasi', 'DKV'],
+                datasets: [{
+                    label: 'Jumlah Mahasiswa',
+                    data: [120, 95, 70],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('angkatanChart'), {
+            type: 'line',
+            data: {
+                labels: ['2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Mahasiswa per Angkatan',
+                    data: [80, 120, 140, 160],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('lulusChart'), {
+            type: 'bar',
+            data: {
+                labels: ['2021', '2022', '2023'],
+                datasets: [{
+                    label: 'Mahasiswa Lulus',
+                    data: [60, 90, 100],
+                    backgroundColor: '#10b981',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('genderChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Laki-laki', 'Perempuan'],
+                datasets: [{
+                    data: [250, 120],
+                    backgroundColor: ['#2563eb', '#ec4899']
+                }]
+            }
+        });
+
+    </script>
+
+</body>
 </html>
